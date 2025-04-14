@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ExcelToPdfConverter")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b775453d1f40272c506f18edd8f7c27a9e73e51e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b22793a65946172caaf93fb0b58f3b63aada2982")]
 [assembly: System.Reflection.AssemblyProductAttribute("ExcelToPdfConverter")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ExcelToPdfConverter")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

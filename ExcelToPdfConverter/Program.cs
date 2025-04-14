@@ -8,57 +8,61 @@ class Program
     {
         if (args.Length < 1)
         {
-            Console.WriteLine("Usage: ExcelToPdfConverter <input.xls or input.xlsx> [output.pdf]");
+            Console.WriteLine("Usage: ExcelConverter <input.xls or input.xlsx> [output.pdf|output.xlsx]");
             return;
         }
 
         string inputFilePath = args[0];
-        string outputFilePath = args.Length > 1 ? args[1] : System.IO.Path.ChangeExtension(inputFilePath, ".pdf");
+        string outputFilePath = args.Length > 1
+            ? args[1]
+            : Path.ChangeExtension(inputFilePath, ".pdf");  // default to PDF
 
         try
         {
-            // Load license from file if available and not empty
-            string licenseFilePath = "aspose.lic";  // Specify your license file path here
-            ApplyLicenseIfAvailable(licenseFilePath);
+            ApplyLicenseIfAvailable("aspose.lic");
 
-            // Check if the input file exists
             if (!File.Exists(inputFilePath))
             {
                 Console.WriteLine($"Error: The input file '{inputFilePath}' does not exist.");
                 return;
             }
 
-            // Load the Excel file (whether it's .xls or .xlsx)
             Workbook workbook = new Workbook(inputFilePath);
-
-            // Force recalculation of all formulas
             workbook.CalculateFormula();
 
-            // Save as PDF
-            workbook.Save(outputFilePath, SaveFormat.Pdf);
+            // Determine output format based on extension
+            string extension = Path.GetExtension(outputFilePath).ToLowerInvariant();
+            SaveFormat format;
 
-            Console.WriteLine($"Conversion successful! PDF saved at: {outputFilePath}");
-        }
-        catch (FileNotFoundException fnfEx)
-        {
-            Console.WriteLine($"Error: The file '{inputFilePath}' was not found. {fnfEx.Message}");
-        }
-        catch (UnauthorizedAccessException uaEx)
-        {
-            Console.WriteLine($"Error: You do not have permission to access the file or folder. {uaEx.Message}");
+            switch (extension)
+            {
+                case ".pdf":
+                    format = SaveFormat.Pdf;
+                    break;
+                case ".xlsx":
+                    format = SaveFormat.Xlsx;
+                    break;
+                case ".xls":
+                    format = SaveFormat.Excel97To2003;
+                    break;
+                default:
+                    Console.WriteLine("Unsupported output file extension. Please use .pdf, .xlsx, or .xls.");
+                    return;
+            }
+
+            workbook.Save(outputFilePath, format);
+            Console.WriteLine($"Success! File saved at: {outputFilePath}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: An unexpected error occurred. {ex.Message}");
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 
-    // Method to apply the Aspose license if the file exists and is not empty
     private static void ApplyLicenseIfAvailable(string licenseFilePath)
     {
         try
         {
-            // Check if the license file exists and is not empty
             if (File.Exists(licenseFilePath) && new FileInfo(licenseFilePath).Length > 0)
             {
                 License license = new License();
@@ -67,12 +71,12 @@ class Program
             }
             else
             {
-                Console.WriteLine("License file not found or empty. Using evaluation mode. Please copy license into file named 'aspose.lic'.");
+                Console.WriteLine("License file not found or empty. Using evaluation mode.");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error applying Aspose license: {ex.Message}");
+            Console.WriteLine($"Error applying license: {ex.Message}");
         }
     }
 }
