@@ -47,6 +47,11 @@ dotnet publish -c Release -r win-x64 --self-contained false
 ExcelToPdfConverter.exe path\to\input.xlsx path\to\output.pdf
 ```
 
+### Convert to PDF with specific Sheet name:
+```bash
+ExcelToPdfConverter.exe path\to\input.xlsx path\to\output.pdf Sheetname
+```
+
 ### Recalculate formulas and output Excel:
 ```bash
 ExcelToPdfConverter.exe path\to\input.xlsx path\to\output.xlsx
@@ -79,6 +84,7 @@ To debug with arguments, configure `launch.json` with `args`.
 
 ```bash
 dotnet run -- "data\report.xlsx" "exports\report.pdf"
+dotnet run -- "data\report.xlsx" "exports\report.pdf" Report
 dotnet run -- "data\sales.xls" "exports\sales_recalculated.xls"
 ```
 
@@ -91,5 +97,3 @@ Place your `aspose.lic` file in the **same folder** as the `.exe` or publish dir
 If the license file is not found, the app will continue in **evaluation mode** with limitations.
 
 ---
-
-Made with ❤️ and Excel.

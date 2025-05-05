@@ -8,14 +8,16 @@ class Program
     {
         if (args.Length < 1)
         {
-            Console.WriteLine("Usage: ExcelConverter <input.xls or input.xlsx> [output.pdf|output.xlsx]");
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  CMDlineAppXLSXtoPDF <input.xls|input.xlsx> [output.pdf|output.xlsx] [sheetName]");
             return;
         }
 
         string inputFilePath = args[0];
         string outputFilePath = args.Length > 1
             ? args[1]
-            : Path.ChangeExtension(inputFilePath, ".pdf");  // default to PDF
+            : Path.ChangeExtension(inputFilePath, ".pdf");  // Default to PDF
+        string sheetToExport = args.Length > 2 ? args[2] : null;
 
         try
         {
@@ -30,7 +32,33 @@ class Program
             Workbook workbook = new Workbook(inputFilePath);
             workbook.CalculateFormula();
 
-            // Determine output format based on extension
+            // If a specific sheet is to be exported
+            if (!string.IsNullOrEmpty(sheetToExport))
+            {
+                bool sheetFound = false;
+                for (int i = 0; i < workbook.Worksheets.Count; i++)
+                {
+                    Worksheet sheet = workbook.Worksheets[i];
+                    if (sheet.Name.Equals(sheetToExport, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sheet.IsVisible = true;
+                        workbook.Worksheets.ActiveSheetIndex = i;
+                        sheetFound = true;
+                    }
+                    else
+                    {
+                        sheet.IsVisible = false;
+                    }
+                }
+
+                if (!sheetFound)
+                {
+                    Console.WriteLine($"Error: Sheet '{sheetToExport}' not found.");
+                    return;
+                }
+            }
+
+            // Determine output format
             string extension = Path.GetExtension(outputFilePath).ToLowerInvariant();
             SaveFormat format;
 
